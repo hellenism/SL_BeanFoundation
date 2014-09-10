@@ -1,9 +1,11 @@
-package com.example.sl_beanfoundation;
+package demos.activities;
 
 import java.net.HttpURLConnection;
 
+import com.example.sl_beanfoundation.R;
 import com.sl.beans.SuggestBean;
-import com.sl.beans.responsebase.ResponseBeanBase.ResponseBeanUtils;
+import com.sl.beans.SuggestRequest;
+import com.sl.beans.core.responsebase.ResponseBeanBase.ResponseBeanUtils;
 import com.sl.net.core.HttpResponseHandler;
 import com.sl.net.core.NetAction;
 import com.sl.net.exception.ExceptionConstants;
@@ -28,9 +30,6 @@ public class MainActivity extends Activity {
 			@Override
 			public void httpSuccess(String responseString, HttpURLConnection connection) {
 				Toast.makeText(MainActivity.this, responseString, Toast.LENGTH_SHORT).show();
-
-				SuggestBean suggestBean = ResponseBeanUtils.fromJson(responseString, SuggestBean.class);
-				Log.d("test", "suggestBean:" + suggestBean.data.code);
 			}
 
 			@Override
@@ -46,6 +45,14 @@ public class MainActivity extends Activity {
 
 		String urlString = "http://mlife.cmbchina.com/Merchant/movie_ticket/ticket/v4/film/coming_films_list.json";
 		netAction.execute(urlString, null);
+		
+		SuggestRequest request = new SuggestRequest();
+		request.q = "facebook";
+		request.f = "www";
+		request.t = "app";
+		request.a = "gl";
+		
+		Log.d("test", "getQueryString:" + request.getQueryString());
 	}
 
 	@Override

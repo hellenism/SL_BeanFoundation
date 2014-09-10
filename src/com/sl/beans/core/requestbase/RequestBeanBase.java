@@ -14,32 +14,22 @@
  *  limitations under the License.
  */
 
-package com.sl.beans.requestbase;
+package com.sl.beans.core.requestbase;
 
 import java.lang.reflect.Field;
 import java.util.HashMap;
 
-/**
- * @ClassName RequestBase.java
- * @Description ӰԺģ��������ࡣÿһ��request�����Ӧһ���ӿڡ� Ŀ���Ƕ�ÿһ��������г���ʹ��������������߼��ϵ�
- *              ����ϣ�ͬʱ����ά��
- * @author Stephen Lee
- * @date 2014��06��17��
- */
 public class RequestBeanBase {
 
-	/** ��ֵ���ͺ��Ա�ǩ */
 	protected int mNumTypeIgnoreTag;
 
 	/**
-	 * Ĭ�Ϲ���
 	 */
 	protected RequestBeanBase() {
 		setNumTypeIgnore();
 	}
 
 	/**
-	 * ����������ֵ���͵ĳ�Ա��ֵΪ��ǰʱ�����
 	 */
 	protected void setNumTypeIgnore() {
 		mNumTypeIgnoreTag = (int) System.currentTimeMillis();
@@ -47,21 +37,16 @@ public class RequestBeanBase {
 	}
 
 	/**
-	 * Ϊ[��ֵ]���͵ĳ�Ա��ֵ��ǰʱ�������
 	 */
 	protected void setAllNumTypeIgnore() {
 		Field[] fields = this.getClass().getFields();
-		// �ǿ�
 		if (null != fields) {
 
-			// ������ǰ������������
 			for (Field field : fields) {
-				field.setAccessible(true); // �������private����
+				field.setAccessible(true); 
 
 				Class<?> fieldType = field.getType();
 
-				// ͨ��[��ֵ]����ֻ�ᱻ����Ϊint , double , long
-				// byte��Ҫ���⴦��
 				if (fieldType == Integer.TYPE || fieldType == Long.TYPE || fieldType == Double.TYPE) {
 
 					try {
@@ -75,21 +60,18 @@ public class RequestBeanBase {
 			}
 		}
 	}
-
-	/**
-	 * @Description ��ȡrequest��������Լ���,����netAction���������
-	 * @return HashMap<String,String> ��ǰ��������Լ�ֵ����
-	 */
-	public HashMap<String, String> getNetActionParams() {
+	
+	public String getQueryString()
+	{
+		String andSign = "&";
+		String equalSign = "=";
+		StringBuilder sb = new StringBuilder();
 		Field[] fields = this.getClass().getFields();
-		HashMap<String, String> paramsHashMap = new HashMap<String, String>(fields.length);
-
-		// �ǿ�
-		if (null != fields) {
-
-			// ������ǰ������������
+		if(null != fields)
+		{
+			
 			for (Field field : fields) {
-				field.setAccessible(true); // �������private����
+				field.setAccessible(true); 
 
 				String fieldName = field.getName();
 				Object fieldValue = null;
@@ -102,12 +84,44 @@ public class RequestBeanBase {
 					e.printStackTrace();
 				}
 
-				// �������ֵ�����͵ĳ�ԱֵΪ��ǰʱ����룬�����
 				if (fieldValue!=null && fieldValue.equals(mNumTypeIgnoreTag)) {
 					continue;
 				}
 
-				// ֵ�ǿ�
+				if (fieldValue != null) {
+					sb.append(fieldName).append(equalSign).append(fieldValue.toString()).append(andSign);
+				}
+			}
+		}
+		
+		return sb.toString();
+	}
+
+	/**
+	 */
+	public HashMap<String, String> getHashMapParams() {
+		Field[] fields = this.getClass().getFields();
+		HashMap<String, String> paramsHashMap = new HashMap<String, String>(fields.length);
+		if (null != fields) {
+
+			for (Field field : fields) {
+				field.setAccessible(true); 
+
+				String fieldName = field.getName();
+				Object fieldValue = null;
+
+				try {
+					fieldValue = field.get(this);
+				} catch (IllegalAccessException e) {
+					e.printStackTrace();
+				} catch (IllegalArgumentException e) {
+					e.printStackTrace();
+				}
+
+				if (fieldValue!=null && fieldValue.equals(mNumTypeIgnoreTag)) {
+					continue;
+				}
+
 				if (fieldValue != null) {
 					paramsHashMap.put(fieldName, fieldValue.toString());
 				}

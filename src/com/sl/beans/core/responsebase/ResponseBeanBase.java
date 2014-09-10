@@ -1,4 +1,4 @@
-package com.sl.beans.responsebase;
+package com.sl.beans.core.responsebase;
 
 import com.google.gson.Gson;
 
@@ -34,11 +34,9 @@ public class ResponseBeanBase extends ResponseAdatper {
 			T result = null;
 			Gson gson = new Gson();
 
-			// �����JSON�ĵ���ʽ�����׳��쳣
 			try {
 				result = gson.fromJson(jsonString, classOfT);
-			} catch (Exception exception)   // �����쳣��ֱ�ӷ���Null ,
-											// �ⲿ����HTTP�ɹ������Ǵ˷�������null,����ж���JSON����ʧ��
+			} catch (Exception exception)
 			{
 				return result;
 			}

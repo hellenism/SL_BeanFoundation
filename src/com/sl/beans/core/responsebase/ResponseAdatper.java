@@ -1,4 +1,4 @@
-package com.sl.beans.responsebase;
+package com.sl.beans.core.responsebase;
 
 public class ResponseAdatper implements IResponseAdatper{
 	@Override
